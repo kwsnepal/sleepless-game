@@ -1,0 +1,65 @@
+#include <SFML/Graphics.hpp>
+
+int main() {
+    // Create the main window
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Running Game");
+
+    // Load a sprite to display
+    sf::Texture texture;
+    if (!texture.loadFromFile("character.png")) {
+        return EXIT_FAILURE;
+    }
+    sf::Sprite sprite(texture);
+
+    // Set the initial position of the sprite
+    float x = 100.f;
+    float y = 300.f;
+    sprite.setPosition(x, y);
+
+    // Game speed and gravity
+    float speed = 0.1f;
+    float gravity = 0.05f;
+    float velocityY = 0.f;
+
+    // Main game loop
+    while (window.isOpen()) {
+        // Process events
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+
+        // Clear screen
+        window.clear();
+
+        // Update game logic
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+            x += speed;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && y >= 300.f) {
+            velocityY = -2.f; // Jump
+        }
+
+        // Apply gravity
+        velocityY += gravity;
+        y += velocityY;
+
+        // Prevent the sprite from falling below the ground
+        if (y > 300.f) {
+            y = 300.f;
+            velocityY = 0.f;
+        }
+
+        // Update the sprite's position
+        sprite.setPosition(x, y);
+
+        // Draw the sprite
+        window.draw(sprite);
+
+        // Update the window
+        window.display();
+    }
+
+    return EXIT_SUCCESS;
+}
